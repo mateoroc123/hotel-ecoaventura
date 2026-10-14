@@ -17,6 +17,11 @@ Proyecto universitario — Ingeniería de Sistemas, Universidad EAN.
 - Gestión de habitaciones (crear, listar, actualizar, eliminar).
 - Gestión del estado de las reservas (pendiente, confirmada, cancelada, completada).
 
+<img width="1901" height="900" alt="{F1BD5CF6-A7C5-4CC1-A05E-4FA3A940E065}" src="https://github.com/user-attachments/assets/2db99710-5c99-4b4d-8fd1-e9166abb6267" />
+<img width="1920" height="902" alt="{68974900-B2F5-4760-ACC9-94C6F0C3D1DB}" src="https://github.com/user-attachments/assets/eda779eb-eec2-4b5b-8c3d-47222abaa09d" />
+<img width="1920" height="902" alt="{E2109E60-8D03-451D-B5B1-87FE9809CE47}" src="https://github.com/user-attachments/assets/76002eb4-4f8c-4604-ad98-48b36ec10756" />
+<img width="1920" height="902" alt="{C8CC4AA1-2027-4FCF-9F78-CF9D8502D456}" src="https://github.com/user-attachments/assets/0c0a8b44-0b4e-4bd0-8adb-b9929b6835bf" />
+
 ## Tecnologías
 
 | Capa | Tecnología |
