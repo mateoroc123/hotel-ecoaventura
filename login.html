@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesion | Hotel EcoAventura</title>
+    <link rel="stylesheet" href="Css/myStyle.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a5d1a 0%, #2e7d32 50%, #43a047 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 420px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+        h1 {
+            color: #1a5d1a;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #2e7d32;
+        }
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+        .input-hint {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-submit:hover {
+            background: #1a5d1a;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .register-link a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        .back-home {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .back-home a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-home a:hover {
+            color: #2e7d32;
+        }
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="img/logo.png" alt="Hotel EcoAventura Logo">
+        </div>
+        
+        <h1>Iniciar Sesion</h1>
+        <p class="subtitle">Hotel EcoAventura - Accede a tu cuenta</p>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <form action="Php/autenticacion.php" method="POST" id="loginForm" onsubmit="return validarFormulario()">
+            
+            <div class="form-group">
+                <label for="usuario">Usuario o Correo Electronico</label>
+                <input type="text" 
+                       name="usuario" 
+                       id="usuario" 
+                       placeholder="Ingrese su usuario o correo" 
+                       required
+                       autocomplete="username">
+                <p class="input-hint">Puede usar su nombre de usuario o correo electronico</p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contrasena</label>
+                <input type="password" 
+                       name="password" 
+                       id="password" 
+                       placeholder="Ingrese su contrasena" 
+                       required
+                       autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn-submit">Iniciar Sesion</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 15px;">
+            <a href="recuperar_password.html" style="color: #2e7d32; text-decoration: none; font-size: 0.9rem;">¿Olvidaste tu contrasena?</a>
+        </div>
+
+        <div class="register-link">
+            <a href="regUser.html">¿No tienes cuenta? Registrate aqui</a>
+        </div>
+
+        <div class="back-home">
+            <a href="index.html">Volver al inicio</a>
+        </div>
+    </div>
+
+    <script>
+        // Validar formulario antes de enviar
+        function validarFormulario() {
+            const usuario = document.getElementById('usuario').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (!usuario || !password) {
+                errorDiv.textContent = 'Por favor complete todos los campos';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            if (usuario.length < 3) {
+                errorDiv.textContent = 'El usuario debe tener al menos 3 caracteres';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            errorDiv.style.display = 'none';
+            return true;
+        }
+        
+        // Verificar si hay mensaje de registro exitoso
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('registro') === 'exitoso') {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = 'Registro exitoso. Ahora puedes iniciar sesion.';
+            successDiv.style.display = 'block';
+        }
+        if (urlParams.get('mensaje') === 'contrasena_actualizada') {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = 'Contrasena actualizada exitosamente. Ahora puedes iniciar sesion.';
+            successDiv.style.display = 'block';
+        }
+        if (urlParams.get('error')) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = decodeURIComponent(urlParams.get('error'));
+            errorDiv.style.display = 'block';
+        }
+        
+        // Limpiar URL de parametros despues de mostrar mensajes
+        if (urlParams.has('error') || urlParams.has('registro')) {
+            setTimeout(() => {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

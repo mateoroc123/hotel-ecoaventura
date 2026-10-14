@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Hotel EcoAventura</title>
+</head>
+<body>
+    <section>
+        <article>
+            <h1>Inicio de Sesión - Hotel EcoAventura</h1>
+            <p>Accede a tu cuenta para administrar reservas, habitaciones y servicios del hotel.</p>
+
+            <form action="Php/autenticacion.php" method="post">
+                
+                <input 
+                    type="text" 
+                    name="loginUser" 
+                    placeholder="Ingrese usuario" 
+                    required><br><br>
+
+                <input 
+                    type="password" 
+                    name="passUser" 
+                    placeholder="Ingrese contraseña" 
+                    required><br><br>
+
+                <input type="submit" value="Iniciar Sesión">
+            </form>
+
+            <h3>
+                <a href="regUser.html">¿No estás registrado? Regístrate aquí</a>
+            </h3>
+        </article>
+    </section>
+</body>
+</html>

@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hotel EcoAventura</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link href="Css/myStyle.css" rel="stylesheet">
+        <style>
+            /* Estilos adicionales para los modales mejorados */
+            .modal-contenido {
+                position: relative;
+                max-width: 400px;
+                width: 90%;
+            }
+            
+            .modal-contenido h2 {
+                margin-bottom: 20px;
+                color: #2e7d32;
+            }
+            
+            .modal-contenido input {
+                width: 100%;
+                padding: 12px 15px;
+                margin: 8px 0;
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                font-size: 14px;
+                transition: border-color 0.3s;
+            }
+            
+            .modal-contenido input:focus {
+                outline: none;
+                border-color: #2e7d32;
+            }
+            
+            .modal-contenido button[type="submit"] {
+                width: 100%;
+                padding: 12px;
+                background: #2e7d32;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.3s;
+                margin-top: 10px;
+            }
+            
+            .modal-contenido button[type="submit"]:hover {
+                background: #1a5d1a;
+            }
+            
+            .modal-contenido button[type="submit"]:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+            
+            .error-msg, .success-msg {
+                padding: 10px;
+                border-radius: 6px;
+                margin-bottom: 15px;
+                font-size: 14px;
+                display: none;
+            }
+            
+            .error-msg {
+                background: #ffebee;
+                color: #c62828;
+                border: 1px solid #ef9a9a;
+            }
+            
+            .success-msg {
+                background: #e8f5e9;
+                color: #2e7d32;
+                border: 1px solid #a5d6a7;
+            }
+            
+
+            
+            /* Menu de usuario logueado */
+            .user-menu {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .user-menu .user-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: white;
+                cursor: pointer;
+                padding: 8px 15px;
+                border-radius: 25px;
+                background: rgba(255,255,255,0.1);
+                transition: background 0.3s;
+            }
+            
+            .user-menu .user-info:hover {
+                background: rgba(255,255,255,0.2);
+            }
+            
+            .user-menu .user-avatar {
+                width: 35px;
+                height: 35px;
+                background: #4CAF50;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+            
+            .user-dropdown {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+                min-width: 200px;
+                display: none;
+                z-index: 1001;
+                overflow: hidden;
+            }
+            
+            .user-dropdown.show {
+                display: block;
+            }
+            
+            .user-dropdown a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 20px;
+                color: #333;
+                text-decoration: none;
+                transition: background 0.3s;
+            }
+            
+            .user-dropdown a:hover {
+                background: #f5f5f5;
+            }
+            
+            .user-dropdown a i {
+                width: 20px;
+                color: #2e7d32;
+            }
+            
+            .user-dropdown .logout {
+                border-top: 1px solid #eee;
+                color: #e74c3c;
+            }
+            
+            .user-dropdown .logout i {
+                color: #e74c3c;
+            }
+            
+            .user-container {
+                position: relative;
+            }
+            
+            /* Pasos de recuperacion */
+            .recovery-step {
+                display: none;
+            }
+            
+            .recovery-step.active {
+                display: block;
+            }
+            
+            .codigo-input {
+                letter-spacing: 10px;
+                font-size: 24px;
+                text-align: center;
+                font-weight: bold;
+            }
+            
+            .btn-back {
+                background: #f5f5f5;
+                color: #333;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            
+            .btn-back:hover {
+                background: #eee;
+            }
+            
+            .codigo-debug {
+                background: #fff3cd;
+                color: #856404;
+                padding: 10px;
+                border-radius: 6px;
+                margin-top: 10px;
+                font-size: 14px;
+                text-align: center;
+            }
+            
+            .spinner {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border: 2px solid #ffffff;
+                border-radius: 50%;
+                border-top-color: transparent;
+                animation: spin 0.8s linear infinite;
+                margin-right: 8px;
+            }
+            
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+        </style>
+    </head>
+    <body>
+        <header class="header-principal">
+            <div class="logo-contenedor">
+                <img src="img/descarga.svg" class="logo-img">
+                <h1>Hotel EcoAventura</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#habitaciones-destacadas">Habitaciones Ecologicas</a></li>
+                    <li><a href="#servicios">Servicios Incluidos</a></li>
+                    <li><a href="#actividades">Actividades Ecologicas</a></li>
+                    <li><a href="#ambiente">Ambiente con la naturaleza</a></li>
+                    
+                    <!-- Botones para usuarios NO logueados -->
+                    <li id="botonesNoLogueado">
+                        <button class="boton-registro" id="abrirRegistro">Registrarse →</button>
+                    </li>
+                    <li id="botonLoginNoLogueado">
+                        <button class="boton-iniciar-sesion" id="abrirLogin">Iniciar Sesion</button>
+                    </li>
+                    
+                    <!-- Menu para usuarios logueados (oculto por defecto) -->
+                    <li id="menuUsuarioLogueado" style="display: none;">
+                        <div class="user-container">
+                            <div class="user-menu">
+                                <div class="user-info" id="toggleUserDropdown">
+                                    <div class="user-avatar" id="userAvatar">U</div>
+                                    <span id="userName">Usuario</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="user-dropdown" id="userDropdown">
+                                <a href="dashboardCliente.php" id="linkDashboard">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span>Mi Panel</span>
+                                </a>
+                                <a href="dashboardCliente.php#mis-reservas" id="linkReservas">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>Mis Reservas</span>
+                                </a>
+                                <a href="Php/logout.php" class="logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Cerrar Sesion</span>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Modal de Registro -->
+            <div class="modal" id="modalRegistro">
+                <div class="modal-contenido">
+                    <span class="cerrar" id="cerrarRegistro">&times;</span>
+                    <h2>Registro</h2>
+                    <div id="errorRegistro" class="error-msg"></div>
+                    <div id="successRegistro" class="success-msg"></div>
+                    <form id="formRegistro">
+                        <input type="text" name="nombre" placeholder="Nombre completo" required>
+                        <input type="email" name="email" placeholder="Correo electronico" required>
+                        <input type="password" name="password" placeholder="Contrasena" required>
+                        <input type="number" name="edad" placeholder="Edad" min="18" max="120">
+                        <select name="genero" class="select-genero" required>
+                            <option value="" disabled selected>Selecciona tu genero</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                            <option value="O">Prefiero no decirlo</option>
+                        </select>
+                        <button type="submit" id="btnRegistro">Registrarse</button>
+                        <button type="button" class="btn-secundario" onclick="mostrarLogin()">Ya tengo una cuenta</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Modal de Login -->
+            <div class="modal" id="modalLogin">
+                <div class="modal-contenido">
+                    <span class="cerrar" id="cerrarLogin">&times;</span>
+                    <h2>Iniciar Sesion</h2>
+                    <div id="errorLogin" class="error-msg"></div>
+                    <div id="successLogin" class="success-msg"></div>
+                    <form id="formLogin">
+                        <input type="text" name="usuario" placeholder="Usuario o Correo electronico" required>
+                        <input type="password" name="password" placeholder="Contrasena" required>
+                        <button type="submit" id="btnLogin">Iniciar sesion</button>
+                        <p class="enlace-modal">¿Olvidaste tu contrasena? <span onclick="mostrarRecuperarPassword()">Recuperala aqui</span></p>
+                        <button type="button" class="btn-secundario" onclick="mostrarRegistro()">Crear una cuenta nueva</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Modal de Recuperar Password -->
+            <div class="modal" id="modalRecuperar">
+                <div class="modal-contenido">
+                    <span class="cerrar" id="cerrarRecuperar">&times;</span>
+                    
+                    <!-- Paso 1: Ingresar email -->
+                    <div id="recuperarPaso1" class="recovery-step active">
+                        <h2>Recuperar Contrasena</h2>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                            Ingresa tu correo electronico y te enviaremos un codigo de verificacion.
+                        </p>
+                        <div id="errorRecuperar1" class="error-msg"></div>
+                        <form id="formRecuperar1">
+                            <input type="email" name="email" id="emailRecuperar" placeholder="Correo electronico" required>
+                            <button type="submit" id="btnRecuperar1">Enviar Codigo</button>
+                            <button type="button" class="btn-secundario" onclick="mostrarLogin()">Volver al inicio de sesion</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Paso 2: Ingresar codigo -->
+                    <div id="recuperarPaso2" class="recovery-step">
+                        <button class="btn-back" onclick="volverPaso1()">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
+                        <h2>Verificar Codigo</h2>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                            Ingresa el codigo de 6 digitos enviado a tu correo.
+                        </p>
+                        <div id="errorRecuperar2" class="error-msg"></div>
+                        <div id="codigoDebug" class="codigo-debug" style="display: none;"></div>
+                        <form id="formRecuperar2">
+                            <input type="text" name="codigo" class="codigo-input" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required>
+                            <button type="submit" id="btnRecuperar2">Verificar Codigo</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Paso 3: Nueva contrasena -->
+                    <div id="recuperarPaso3" class="recovery-step">
+                        <h2>Nueva Contrasena</h2>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                            Ingresa tu nueva contrasena.
+                        </p>
+                        <div id="errorRecuperar3" class="error-msg"></div>
+                        <div id="successRecuperar3" class="success-msg"></div>
+                        <form id="formRecuperar3">
+                            <input type="password" name="nueva_password" placeholder="Nueva contrasena" required minlength="4">
+                            <input type="password" name="confirmar_password" placeholder="Confirmar contrasena" required>
+                            <button type="submit" id="btnRecuperar3">Cambiar Contrasena</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h1>Una experiencia Ecologica</h1>
+            <h2>
+                "Mas que un hotel, una experiencia natural,
+                Donde la naturaleza cobra vida"
+            </h2>
+            <form class="formulario-busqueda" id="formBusqueda">
+                <div class="campo campo-destino">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="texto">
+                        <label>Destino</label>
+                        <input type="text" id="inputDestino" placeholder="¿A donde vas?" required autocomplete="off">
+                        <div class="dropdown-destinos" id="dropdownDestinos">
+                            <div class="destino-item" data-ciudad="cartagena">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Cartagena de Indias</span>
+                            </div>
+                            <div class="destino-item" data-ciudad="santamarta">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Santa Marta</span>
+                            </div>
+                            <div class="destino-item" data-ciudad="medellin">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Medellin</span>
+                            </div>
+                            <div class="destino-item" data-ciudad="bogota">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Bogota</span>
+                            </div>
+                            <div class="destino-item" data-ciudad="cali">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Cali</span>
+                            </div>
+                            <div class="destino-item" data-ciudad="sanandres">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>San Andres Islas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="campo">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="texto">
+                        <label>Check-in</label>
+                        <input type="date" id="inputCheckin" required>
+                    </div>
+                </div>
+                <div class="campo">
+                    <i class="fas fa-calendar-times"></i>
+                    <div class="texto">
+                        <label>Check-out</label>
+                        <input type="date" id="inputCheckout" required>
+                    </div>
+                </div>
+                <div class="campo">
+                    <i class="fas fa-user"></i>
+                    <div class="texto">
+                        <label>Huespedes</label>
+                        <select id="inputHuespedes" required>
+                            <option value="1">1 persona</option>
+                            <option value="2" selected>2 personas</option>
+                            <option value="3">3 personas</option>
+                            <option value="4">4 personas</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit">Buscar Habitaciones</button>
+            </form>
+        </section>
+        
+        <!-- Seccion de Resultados de Busqueda -->
+        <section id="resultados-busqueda" class="resultados-busqueda" style="display: none;">
+            <div class="resultados-header">
+                <h1 class="titulo-seccion">Habitaciones Disponibles en <span id="ciudadResultado"></span></h1>
+                <p class="subtitulo-resultado">
+                    <span id="fechasResultado"></span> | <span id="huespedesResultado"></span>
+                </p>
+            </div>
+            <div class="contenedor-habitaciones-grid" id="gridHabitaciones">
+                <!-- Las habitaciones se cargan dinamicamente -->
+            </div>
+        </section>
+        
+        <!-- Modal de Nueva Reserva -->
+        <div class="modal" id="modalReserva">
+            <div class="modal-contenido modal-reserva">
+                <span class="cerrar" id="cerrarReserva">&times;</span>
+                <h2><i class="fas fa-calendar-plus"></i> Nueva Reserva</h2>
+                
+                <div class="campo-reserva">
+                    <label>Habitacion Seleccionada</label>
+                    <input type="text" id="reservaHabitacion" readonly>
+                </div>
+                
+                <div class="campos-dobles">
+                    <div class="campo-reserva">
+                        <label>Fecha Check-in</label>
+                        <input type="date" id="reservaCheckin" required>
+                    </div>
+                    <div class="campo-reserva">
+                        <label>Fecha Check-out</label>
+                        <input type="date" id="reservaCheckout" required>
+                    </div>
+                </div>
+                
+                <div class="campo-reserva">
+                    <label>Numero de Huespedes</label>
+                    <select id="reservaHuespedes" required>
+                        <option value="1">1 persona</option>
+                        <option value="2">2 personas</option>
+                        <option value="3">3 personas</option>
+                        <option value="4">4 personas</option>
+                    </select>
+                </div>
+                
+                <div class="campo-reserva">
+                    <label>Notas adicionales (opcional)</label>
+                    <textarea id="reservaNotas" placeholder="Requerimientos especiales..."></textarea>
+                </div>
+                
+                <div class="resumen-precio">
+                    <p><strong>Precio por noche:</strong> <span id="precioPorNoche">$0</span></p>
+                    <p><strong>Total estimado:</strong> <span id="totalEstimado">$0</span></p>
+                </div>
+                
+                <div class="botones-reserva">
+                    <button type="button" class="btn-cancelar" onclick="cerrarModalReserva()">Cancelar</button>
+                    <button type="button" class="btn-confirmar" onclick="confirmarReserva()">
+                        <i class="fas fa-check"></i> Confirmar Reserva
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <section id="habitaciones-destacadas">
+            <h1 class="titulo-seccion">Habitaciones Destacadas</h1>
+            <div class="contenedor-habitaciones">
+                <article class="card">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="img/6947153880eba55c33e8c46a900ad6749100da1f8f.jpg" alt="Habitacion Estandar">
+                            <h2>Habitacion Estandar</h2>
+                            <p>
+                                Vive una experiencia autentica en nuestra Habitacion EcoAventura,
+                                pensada para quienes desean conectar con la naturaleza.
+                            </p>
+                            <div class="card-footer">
+                                <button class="btn-flip">Ver mas informacion →</button>
+                                <span class="rating">4.5</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h2>Habitacion Estandar</h2>
+                            <ul>
+                                <li>Cama amplia y confortable</li>
+                                <li>Vista a las montanas</li>
+                                <li>Bano privado</li>
+                                <li>Ambiente natural</li>
+                            </ul>
+                            <h3>$80.000</h3>
+                            <button class="btn-flip">Volver</button>
+                        </div>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="img/foto-18-3-1024x684.jpg" alt="Habitacion Doble">
+                            <h2>Habitacion Doble</h2>
+                            <p>
+                                Sumergete en una experiencia de descanso total en nuestra
+                                Habitacion Doble disenada para integrarse con la naturaleza.
+                            </p>
+                            <div class="card-footer">
+                                <button class="btn-flip">Ver mas informacion →</button>
+                                <span class="rating">4.7</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h2>Habitacion Doble</h2>
+                            <ul>
+                                <li>Cama King Size</li>
+                                <li>Vista panoramica al bosque</li>
+                                <li>Zona de descanso</li>
+                                <li>Ambiente ecologico</li>
+                            </ul>
+                            <h3>$220.000</h3>
+                            <button class="btn-flip">Volver</button>
+                        </div>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="img/GM-interior-cama-2-2048x1365-1.webp" alt="Suite EcoAventura">
+                            <h2>Suite EcoAventura</h2>
+                            <p>
+                                Vive una estadia diferente en nuestra Suite EcoAventura,
+                                un refugio disenado para aventureros.
+                            </p>
+                            <div class="card-footer">
+                                <button class="btn-flip">Ver mas informacion →</button>
+                                <span class="rating">5.0</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h2>Suite EcoAventura</h2>
+                            <ul>
+                                <li>Cama King Size</li>
+                                <li>Diseno eco industrial</li>
+                                <li>Zona privada</li>
+                                <li>Aire acondicionado</li>
+                            </ul>
+                            <h3>$350.000</h3>
+                            <button class="btn-flip">Volver</button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <div class="cargar-mas">
+                <button onclick="irAlDashboard()">Cargar mas habitaciones</button>
+            </div>
+        </section>
+        
+        <section class="informacion">
+            <h1>Sobre Nosotros</h1>
+            <h2>
+                En Hotel EcoAventura ofrecemos una experiencia unica
+                de descanso en armonia con la naturaleza.
+            </h2>
+            <h2>
+                Promovemos el turismo sostenible,
+                combinando comodidad, aventura y respeto por el medio ambiente.
+            </h2>
+        </section>
+        
+        <section class="servicios" id="servicios">
+            <h2 class="titulo">Servicios</h2>
+            <div class="contenido-servicios">
+                <div class="servicio">
+                    <i class="fas fa-wifi"></i>
+                    <p>Wifi Gratuito por<br>todo el hotel y en cada habitacion</p>
+                </div>
+                <div class="servicio">
+                    <i class="fas fa-dumbbell"></i>
+                    <p>Gym exclusivo por<br>cada habitacion</p>
+                </div>
+                <div class="servicio">
+                    <i class="fas fa-utensils"></i>
+                    <p>Incluye Desayuno,<br>Almuerzo y Cena</p>
+                </div>
+                <div class="servicio">
+                    <i class="fas fa-bus"></i>
+                    <p>Tour Exclusivo de<br>todo el hotel</p>
+                </div>
+                <div class="servicio">
+                    <i class="fas fa-paw"></i>
+                    <p>Tour Exclusivo de un<br>zoologico</p>
+                </div>
+                <div class="servicio">
+                    <i class="fas fa-spa"></i>
+                    <p>Un Spa especial en<br>la naturaleza</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="te-esperamos">
+            <div class="contenido-esperamos">
+                <h1>¿Listo para tu proxima aventura?</h1>
+                <p>Unete a millones de viajeros que confian en Hotel EcoAventura para sus reservas</p>
+                <div class="botones">
+                    <button id="explorar">Explorar destinos</button>
+                    <button id="app">Descargar App</button>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="footer">
+            <div class="footer-contenedor">
+                <div class="footer-izquierda">
+                    <div class="footer-logo">
+                        <img src="img/descarga.svg" alt="logo">
+                        <h2>Hotel EcoAventura</h2>
+                    </div>
+                  <p>Encuentra y reserva los mejores hoteles<br>
+                    con las mejores ofertas.
+                    </p>
+                    <p class="copyright">
+                        © 2026 HotelEcoAventura.
+                    </p>
+                </div>
+                <div class="footer-derecha">
+                    <h2>Redes</h2>
+                    <div class="red">
+                        <span><i class="fab fa-instagram"></i></span>
+                        <p>HotelEcoAventura</p>
+                    </div>
+                    <div class="red">
+                        <span><i class="fab fa-whatsapp"></i></span>
+                          <p>+57 3094557867</p>
+                    </div>
+                    <div class="red">
+                        <span><i class="fas fa-envelope"></i></span>
+                        <p>hotelecoaventura@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+<script>
+// ============================================
+// VARIABLES GLOBALES
+// ============================================
+let usuarioActual = null;
+
+// ============================================
+// VERIFICAR SESION AL CARGAR
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    verificarSesion();
+    inicializarEventos();
+});
+
+function verificarSesion() {
+    fetch('Php/check_session.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.loggedin) {
+                usuarioActual = data.user;
+                mostrarMenuUsuario(data.user);
+            } else {
+                mostrarBotonesLogin();
+            }
+        })
+        .catch(error => {
+            console.error('Error verificando sesion:', error);
+            mostrarBotonesLogin();
+        });
+}
+
+function mostrarMenuUsuario(user) {
+    // Ocultar botones de login/registro
+    document.getElementById('botonesNoLogueado').style.display = 'none';
+    document.getElementById('botonLoginNoLogueado').style.display = 'none';
+    
+    // Mostrar menu de usuario
+    document.getElementById('menuUsuarioLogueado').style.display = 'block';
+    document.getElementById('userName').textContent = user.nombre;
+    document.getElementById('userAvatar').textContent = user.nombre.charAt(0).toUpperCase();
+    
+    // Configurar link del dashboard segun rol
+    const dashboardLink = user.rol === 'administrador' ? 'panelAdmin.php' : 'dashboardCliente.php';
+    document.getElementById('linkDashboard').href = dashboardLink;
+    document.getElementById('linkReservas').href = dashboardLink + '#reservas';
+}
+
+function mostrarBotonesLogin() {
+    document.getElementById('botonesNoLogueado').style.display = 'block';
+    document.getElementById('botonLoginNoLogueado').style.display = 'block';
+    document.getElementById('menuUsuarioLogueado').style.display = 'none';
+}
+
+// ============================================
+// INICIALIZAR EVENTOS
+// ============================================
+function inicializarEventos() {
+    // Toggle dropdown de usuario
+    const toggleDropdown = document.getElementById('toggleUserDropdown');
+    const dropdown = document.getElementById('userDropdown');
+    
+    if (toggleDropdown) {
+        toggleDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.classList.toggle('show');
+        });
+    }
+    
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', function(e) {
+        if (dropdown && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+    
+    // Modales
+    const modalRegistro = document.getElementById('modalRegistro');
+    const modalLogin = document.getElementById('modalLogin');
+    const modalRecuperar = document.getElementById('modalRecuperar');
+    
+    // Abrir registro
+    document.getElementById('abrirRegistro').addEventListener('click', function() {
+        modalRegistro.style.display = 'flex';
+        limpiarFormulario('formRegistro');
+    });
+    
+    // Cerrar registro
+    document.getElementById('cerrarRegistro').addEventListener('click', function() {
+        modalRegistro.style.display = 'none';
+    });
+    
+    // Abrir login
+    document.getElementById('abrirLogin').addEventListener('click', function() {
+        modalLogin.style.display = 'flex';
+        limpiarFormulario('formLogin');
+    });
+    
+    // Cerrar login
+    document.getElementById('cerrarLogin').addEventListener('click', function() {
+        modalLogin.style.display = 'none';
+    });
+    
+    // Cerrar recuperar
+    document.getElementById('cerrarRecuperar').addEventListener('click', function() {
+        modalRecuperar.style.display = 'none';
+        resetearRecuperacion();
+    });
+    
+    // Cerrar modales al hacer click fuera
+    window.addEventListener('click', function(e) {
+        if (e.target === modalRegistro) modalRegistro.style.display = 'none';
+        if (e.target === modalLogin) modalLogin.style.display = 'none';
+        if (e.target === modalRecuperar) {
+            modalRecuperar.style.display = 'none';
+            resetearRecuperacion();
+        }
+    });
+    
+    // Formulario de registro
+    document.getElementById('formRegistro').addEventListener('submit', function(e) {
+        e.preventDefault();
+        registrarUsuario();
+    });
+    
+    // Formulario de login
+    document.getElementById('formLogin').addEventListener('submit', function(e) {
+        e.preventDefault();
+        iniciarSesion();
+    });
+    
+    // Formularios de recuperacion
+    document.getElementById('formRecuperar1').addEventListener('submit', function(e) {
+        e.preventDefault();
+        solicitarCodigo();
+    });
+    
+    document.getElementById('formRecuperar2').addEventListener('submit', function(e) {
+        e.preventDefault();
+        verificarCodigo();
+    });
+    
+    document.getElementById('formRecuperar3').addEventListener('submit', function(e) {
+        e.preventDefault();
+        cambiarPassword();
+    });
+    
+    // Cards flip
+    const botones = document.querySelectorAll('.btn-flip');
+    botones.forEach(boton => {
+        boton.addEventListener('click', function() {
+            const card = this.closest('.card');
+            card.classList.toggle('flip');
+        });
+    });
+    
+    // Explorar destinos
+    document.getElementById('explorar').addEventListener('click', function() {
+        document.getElementById('habitaciones-destacadas').scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+    
+    // Descargar app
+    document.getElementById('app').addEventListener('click', function() {
+        alert('La descarga de la App estara disponible pronto');
+    });
+}
+
+// ============================================
+// FUNCIONES DE AUTENTICACION
+// ============================================
+function registrarUsuario() {
+    const form = document.getElementById('formRegistro');
+    const formData = new FormData(form);
+    const btn = document.getElementById('btnRegistro');
+    const errorDiv = document.getElementById('errorRegistro');
+    const successDiv = document.getElementById('successRegistro');
+    
+    // Mostrar loading
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Registrando...';
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    
+    fetch('Php/ajax_registro.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Registrarse';
+        
+        if (data.success) {
+            successDiv.textContent = data.message;
+            successDiv.style.display = 'block';
+            form.reset();
+            
+            // Mostrar login despues de 2 segundos
+            setTimeout(function() {
+                document.getElementById('modalRegistro').style.display = 'none';
+                document.getElementById('modalLogin').style.display = 'flex';
+                successDiv.style.display = 'none';
+            }, 2000);
+        } else {
+            errorDiv.textContent = data.message;
+            errorDiv.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        btn.disabled = false;
+        btn.innerHTML = 'Registrarse';
+        errorDiv.textContent = 'Error de conexion. Intenta de nuevo.';
+        errorDiv.style.display = 'block';
+    });
+}
+
+function iniciarSesion() {
+    const form = document.getElementById('formLogin');
+    const formData = new FormData(form);
+    const btn = document.getElementById('btnLogin');
+    const errorDiv = document.getElementById('errorLogin');
+    const successDiv = document.getElementById('successLogin');
+    
+    // Mostrar loading
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Iniciando...';
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    
+    fetch('Php/ajax_login.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Iniciar sesion';
+        
+        if (data.success) {
+            successDiv.textContent = data.saludo + ' ' + data.user.nombre + '!';
+            successDiv.style.display = 'block';
+            
+            // Actualizar interfaz
+            usuarioActual = data.user;
+            mostrarMenuUsuario(data.user);
+            
+            // Cerrar modal despues de 1.5 segundos
+            setTimeout(function() {
+                document.getElementById('modalLogin').style.display = 'none';
+                successDiv.style.display = 'none';
+                form.reset();
+            }, 1500);
+        } else {
+            errorDiv.textContent = data.message;
+            errorDiv.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        btn.disabled = false;
+        btn.innerHTML = 'Iniciar sesion';
+        errorDiv.textContent = 'Error de conexion. Intenta de nuevo.';
+        errorDiv.style.display = 'block';
+    });
+}
+
+// ============================================
+// FUNCIONES DE RECUPERACION DE PASSWORD
+// ============================================
+function mostrarRecuperarPassword() {
+    document.getElementById('modalLogin').style.display = 'none';
+    document.getElementById('modalRecuperar').style.display = 'flex';
+    resetearRecuperacion();
+}
+
+function mostrarLogin() {
+  document.getElementById('modalRegistro').style.display = 'none';
+  document.getElementById('modalRecuperar').style.display = 'none';
+  document.getElementById('modalLogin').style.display = 'flex';
+  limpiarFormulario('formLogin');
+}
+
+function mostrarRegistro() {
+  document.getElementById('modalLogin').style.display = 'none';
+  document.getElementById('modalRecuperar').style.display = 'none';
+  document.getElementById('modalRegistro').style.display = 'flex';
+  limpiarFormulario('formRegistro');
+}
+
+function resetearRecuperacion() {
+    document.getElementById('recuperarPaso1').classList.add('active');
+    document.getElementById('recuperarPaso2').classList.remove('active');
+    document.getElementById('recuperarPaso3').classList.remove('active');
+    document.getElementById('codigoDebug').style.display = 'none';
+    limpiarFormulario('formRecuperar1');
+    limpiarFormulario('formRecuperar2');
+    limpiarFormulario('formRecuperar3');
+}
+
+function volverPaso1() {
+    document.getElementById('recuperarPaso2').classList.remove('active');
+    document.getElementById('recuperarPaso1').classList.add('active');
+}
+
+function solicitarCodigo() {
+    const formData = new FormData();
+    formData.append('action', 'solicitar_codigo');
+    formData.append('email', document.getElementById('emailRecuperar').value);
+    
+    const btn = document.getElementById('btnRecuperar1');
+    const errorDiv = document.getElementById('errorRecuperar1');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Enviando...';
+    errorDiv.style.display = 'none';
+    
+    fetch('Php/recuperar_password.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Enviar Codigo';
+        
+        if (data.success) {
+            // Mostrar paso 2
+            document.getElementById('recuperarPaso1').classList.remove('active');
+            document.getElementById('recuperarPaso2').classList.add('active');
+            
+            // Mostrar codigo de debug (solo para pruebas)
+            if (data.codigo_debug) {
+                const debugDiv = document.getElementById('codigoDebug');
+                debugDiv.innerHTML = '<strong>Codigo de prueba:</strong> ' + data.codigo_debug + '<br><small>(En produccion se enviara al correo)</small>';
+                debugDiv.style.display = 'block';
+            }
+        } else {
+            errorDiv.textContent = data.message;
+            errorDiv.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        btn.disabled = false;
+        btn.innerHTML = 'Enviar Codigo';
+        errorDiv.textContent = 'Error de conexion';
+        errorDiv.style.display = 'block';
+    });
+}
+
+function verificarCodigo() {
+    const formData = new FormData();
+    formData.append('action', 'verificar_codigo');
+    formData.append('codigo', document.querySelector('#formRecuperar2 input[name="codigo"]').value);
+    
+    const btn = document.getElementById('btnRecuperar2');
+    const errorDiv = document.getElementById('errorRecuperar2');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Verificando...';
+    errorDiv.style.display = 'none';
+    
+    fetch('Php/recuperar_password.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Verificar Codigo';
+        
+        if (data.success) {
+            // Mostrar paso 3
+            document.getElementById('recuperarPaso2').classList.remove('active');
+            document.getElementById('recuperarPaso3').classList.add('active');
+        } else {
+            errorDiv.textContent = data.message;
+            errorDiv.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        btn.disabled = false;
+        btn.innerHTML = 'Verificar Codigo';
+        errorDiv.textContent = 'Error de conexion';
+        errorDiv.style.display = 'block';
+    });
+}
+
+function cambiarPassword() {
+    const form = document.getElementById('formRecuperar3');
+    const formData = new FormData(form);
+    formData.append('action', 'cambiar_password');
+    
+    const btn = document.getElementById('btnRecuperar3');
+    const errorDiv = document.getElementById('errorRecuperar3');
+    const successDiv = document.getElementById('successRecuperar3');
+    
+    // Validar que las contrasenas coincidan
+    const pass1 = form.querySelector('input[name="nueva_password"]').value;
+    const pass2 = form.querySelector('input[name="confirmar_password"]').value;
+    
+    if (pass1 !== pass2) {
+        errorDiv.textContent = 'Las contrasenas no coinciden';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Cambiando...';
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    
+    fetch('Php/recuperar_password.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Cambiar Contrasena';
+        
+        if (data.success) {
+            successDiv.textContent = data.message;
+            successDiv.style.display = 'block';
+            
+            // Redirigir al login despues de 2 segundos
+            setTimeout(function() {
+                document.getElementById('modalRecuperar').style.display = 'none';
+                document.getElementById('modalLogin').style.display = 'flex';
+                resetearRecuperacion();
+            }, 2000);
+        } else {
+            errorDiv.textContent = data.message;
+            errorDiv.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        btn.disabled = false;
+        btn.innerHTML = 'Cambiar Contrasena';
+        errorDiv.textContent = 'Error de conexion';
+        errorDiv.style.display = 'block';
+    });
+}
+
+// ============================================
+// UTILIDADES
+// ============================================
+function limpiarFormulario(formId) {
+    const form = document.getElementById(formId);
+    if (form) {
+        form.reset();
+        // Ocultar mensajes de error y exito
+        const errors = form.parentElement.querySelectorAll('.error-msg, .success-msg');
+        errors.forEach(el => el.style.display = 'none');
+    }
+}
+
+// ============================================
+// SISTEMA DE BUSQUEDA Y RESERVAS
+// ============================================
+
+// Base de datos de habitaciones por ciudad
+const habitacionesPorCiudad = {
+    cartagena: [
+        { id: 301, nombre: 'Habitacion 301', tipo: 'Sencilla', precio: 70000, capacidad: 1, descripcion: 'Habitacion sencilla economica, perfecta para viajeros solos. Vista al mar Caribe.', imagen: 'img/6947153880eba55c33e8c46a900ad6749100da1f8f.jpg' },
+        { id: 101, nombre: 'Habitacion 101', tipo: 'Sencilla', precio: 80000, capacidad: 1, descripcion: 'Habitacion sencilla con vista al jardin, cama individual, bano privado, WiFi y TV.', imagen: 'img/foto-18-3-1024x684.jpg' }
+    ],
+    santamarta: [
+        { id: 102, nombre: 'Habitacion 102', tipo: 'Doble', precio: 120000, capacidad: 2, descripcion: 'Habitacion doble con dos camas, aire acondicionado, minibar, WiFi y TV. Vista a la Sierra Nevada.', imagen: 'img/GM-interior-cama-2-2048x1365-1.webp' },
+        { id: 302, nombre: 'Habitacion 302', tipo: 'Doble', precio: 150000, capacidad: 2, descripcion: 'Habitacion doble superior con balcon y vista a la montana.', imagen: 'img/Grand-Master-interior-cama-2048x1365-1.webp' }
+    ],
+    medellin: [
+        { id: 202, nombre: 'Habitacion 202', tipo: 'Familiar', precio: 180000, capacidad: 4, descripcion: 'Habitacion familiar con dos camas dobles, ideal para familias, desayuno incluido.', imagen: 'img/Nayara20del20-20Bedroom.webp' },
+        { id: 303, nombre: 'Habitacion 303', tipo: 'Doble', precio: 140000, capacidad: 2, descripcion: 'Habitacion doble con vista a la ciudad, estilo moderno y confortable.', imagen: 'img/foto-18-3-1024x684.jpg' }
+    ],
+    bogota: [
+        { id: 201, nombre: 'Habitacion 201', tipo: 'Suite', precio: 250000, capacidad: 2, descripcion: 'Suite de lujo con sala de estar, jacuzzi, vista panoramica y servicio premium.', imagen: 'img/6947153880eba55c33e8c46a900ad6749100da1f8f.jpg' },
+        { id: 401, nombre: 'Habitacion 401', tipo: 'Familiar', precio: 200000, capacidad: 4, descripcion: 'Amplia habitacion familiar con dos ambientes, perfecta para grupos.', imagen: 'img/GM-interior-cama-2-2048x1365-1.webp' }
+    ],
+    cali: [
+        { id: 501, nombre: 'Habitacion 501', tipo: 'Sencilla', precio: 75000, capacidad: 1, descripcion: 'Habitacion sencilla con ambiente tropical y vista al jardin.', imagen: 'img/foto-18-3-1024x684.jpg' },
+        { id: 502, nombre: 'Habitacion 502', tipo: 'Doble', precio: 130000, capacidad: 2, descripcion: 'Habitacion doble con terraza privada y hamaca.', imagen: 'img/Grand-Master-interior-cama-2048x1365-1.webp' }
+    ],
+    sanandres: [
+        { id: 601, nombre: 'Habitacion 601', tipo: 'Suite', precio: 300000, capacidad: 2, descripcion: 'Suite frente al mar con acceso directo a la playa, vista al mar de los 7 colores.', imagen: 'img/Nayara20del20-20Bedroom.webp' },
+        { id: 602, nombre: 'Habitacion 602', tipo: 'Familiar', precio: 220000, capacidad: 4, descripcion: 'Habitacion familiar con vista al mar, ideal para vacaciones en familia.', imagen: 'img/GM-interior-cama-2-2048x1365-1.webp' }
+    ]
+};
+
+const nombresCiudades = {
+    cartagena: 'Cartagena de Indias',
+    santamarta: 'Santa Marta',
+    medellin: 'Medellin',
+    bogota: 'Bogota',
+    cali: 'Cali',
+    sanandres: 'San Andres Islas'
+};
+
+// Variables de busqueda actual
+let busquedaActual = {
+    ciudad: '',
+    checkin: '',
+    checkout: '',
+    huespedes: 2
+};
+
+let habitacionSeleccionada = null;
+
+// Inicializar eventos de busqueda
+document.addEventListener('DOMContentLoaded', function() {
+    inicializarBusqueda();
+});
+
+function inicializarBusqueda() {
+    const inputDestino = document.getElementById('inputDestino');
+    const dropdown = document.getElementById('dropdownDestinos');
+    const destinoItems = document.querySelectorAll('.destino-item');
+    
+    // Mostrar dropdown al hacer focus en el input
+    inputDestino.addEventListener('focus', function() {
+        dropdown.classList.add('show');
+    });
+    
+    // Filtrar destinos al escribir
+    inputDestino.addEventListener('input', function() {
+        const filtro = this.value.toLowerCase();
+        destinoItems.forEach(item => {
+            const ciudad = item.querySelector('span').textContent.toLowerCase();
+            item.style.display = ciudad.includes(filtro) ? 'flex' : 'none';
+        });
+        dropdown.classList.add('show');
+    });
+    
+    // Seleccionar destino
+    destinoItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const ciudad = this.dataset.ciudad;
+            const nombreCiudad = this.querySelector('span').textContent;
+            inputDestino.value = nombreCiudad;
+            busquedaActual.ciudad = ciudad;
+            dropdown.classList.remove('show');
+        });
+    });
+    
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.campo-destino')) {
+            dropdown.classList.remove('show');
+        }
+    });
+    
+    // Establecer fecha minima (hoy)
+    const hoy = new Date().toISOString().split('T')[0];
+    document.getElementById('inputCheckin').setAttribute('min', hoy);
+    document.getElementById('inputCheckout').setAttribute('min', hoy);
+    
+    // Actualizar checkout minimo segun checkin
+    document.getElementById('inputCheckin').addEventListener('change', function() {
+        document.getElementById('inputCheckout').setAttribute('min', this.value);
+    });
+    
+    // Formulario de busqueda
+    document.getElementById('formBusqueda').addEventListener('submit', function(e) {
+        e.preventDefault();
+        realizarBusqueda();
+    });
+    
+    // Cerrar modal de reserva
+    document.getElementById('cerrarReserva').addEventListener('click', cerrarModalReserva);
+    
+    // Cerrar modal al hacer click fuera
+    document.getElementById('modalReserva').addEventListener('click', function(e) {
+        if (e.target === this) {
+            cerrarModalReserva();
+        }
+    });
+    
+    // Actualizar precio total al cambiar fechas en modal de reserva
+    document.getElementById('reservaCheckin').addEventListener('change', calcularTotal);
+    document.getElementById('reservaCheckout').addEventListener('change', calcularTotal);
+}
+
+function realizarBusqueda() {
+    const inputDestino = document.getElementById('inputDestino').value;
+    const checkin = document.getElementById('inputCheckin').value;
+    const checkout = document.getElementById('inputCheckout').value;
+    const huespedes = parseInt(document.getElementById('inputHuespedes').value);
+    
+    // Validar ciudad seleccionada
+    if (!busquedaActual.ciudad) {
+        // Intentar encontrar la ciudad por el texto ingresado
+        const textoDestino = inputDestino.toLowerCase();
+        for (let ciudad in nombresCiudades) {
+            if (nombresCiudades[ciudad].toLowerCase().includes(textoDestino)) {
+                busquedaActual.ciudad = ciudad;
+                break;
+            }
+        }
+    }
+    
+    if (!busquedaActual.ciudad) {
+        alert('Por favor selecciona un destino valido de la lista');
+        return;
+    }
+    
+    if (!checkin || !checkout) {
+        alert('Por favor selecciona las fechas de check-in y check-out');
+        return;
+    }
+    
+    if (new Date(checkout) <= new Date(checkin)) {
+        alert('La fecha de check-out debe ser posterior al check-in');
+        return;
+    }
+    
+    // Guardar busqueda actual
+    busquedaActual.checkin = checkin;
+    busquedaActual.checkout = checkout;
+    busquedaActual.huespedes = huespedes;
+    
+    // Mostrar resultados
+    mostrarResultados();
+}
+
+function mostrarResultados() {
+    const seccionResultados = document.getElementById('resultados-busqueda');
+    const gridHabitaciones = document.getElementById('gridHabitaciones');
+    
+    // Actualizar encabezado
+    document.getElementById('ciudadResultado').textContent = nombresCiudades[busquedaActual.ciudad];
+    
+    // Formatear fechas
+    const opciones = { day: 'numeric', month: 'short', year: 'numeric' };
+    const fechaCheckin = new Date(busquedaActual.checkin + 'T00:00:00').toLocaleDateString('es-CO', opciones);
+    const fechaCheckout = new Date(busquedaActual.checkout + 'T00:00:00').toLocaleDateString('es-CO', opciones);
+    document.getElementById('fechasResultado').textContent = fechaCheckin + ' - ' + fechaCheckout;
+    document.getElementById('huespedesResultado').textContent = busquedaActual.huespedes + (busquedaActual.huespedes === 1 ? ' persona' : ' personas');
+    
+    // Obtener habitaciones de la ciudad
+    const habitaciones = habitacionesPorCiudad[busquedaActual.ciudad] || [];
+    
+    // Filtrar por capacidad
+    const habitacionesFiltradas = habitaciones.filter(h => h.capacidad >= busquedaActual.huespedes);
+    
+    // Generar HTML de las tarjetas
+    if (habitacionesFiltradas.length > 0) {
+        gridHabitaciones.innerHTML = habitacionesFiltradas.map(hab => `
+            <article class="habitacion-card" data-id="${hab.id}">
+                <img src="${hab.imagen}" alt="${hab.nombre}">
+                <div class="habitacion-info">
+                    <span class="tipo-habitacion">${hab.tipo}</span>
+                    <h3>${hab.nombre}</h3>
+                    <p>${hab.descripcion}</p>
+                    <div class="habitacion-precio">
+                        <div>
+                            <span class="precio">$${hab.precio.toLocaleString('es-CO')}</span>
+                            <span class="precio-noche">/noche</span>
+                        </div>
+                        <button class="btn-reservar" onclick="abrirModalReserva(${hab.id}, '${busquedaActual.ciudad}')">Reservar</button>
+                    </div>
+                    <div class="habitacion-capacidad">
+                        <i class="fas fa-users"></i>
+                        <span>Capacidad: ${hab.capacidad} ${hab.capacidad === 1 ? 'persona' : 'personas'}</span>
+                    </div>
+                </div>
+            </article>
+        `).join('');
+    } else {
+        gridHabitaciones.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+                <i class="fas fa-bed" style="font-size: 48px; color: #ccc; margin-bottom: 20px; display: block;"></i>
+                <h3>No hay habitaciones disponibles</h3>
+                <p>No encontramos habitaciones con capacidad para ${busquedaActual.huespedes} personas en ${nombresCiudades[busquedaActual.ciudad]}.</p>
+                <p>Intenta reducir el numero de huespedes o selecciona otro destino.</p>
+            </div>
+        `;
+    }
+    
+    // Mostrar seccion y hacer scroll
+    seccionResultados.style.display = 'block';
+    seccionResultados.scrollIntoView({ behavior: 'smooth' });
+}
+
+function abrirModalReserva(habitacionId, ciudad) {
+    const habitaciones = habitacionesPorCiudad[ciudad];
+    habitacionSeleccionada = habitaciones.find(h => h.id === habitacionId);
+    
+    if (!habitacionSeleccionada) return;
+    
+    // Llenar datos del modal
+    document.getElementById('reservaHabitacion').value = habitacionSeleccionada.nombre;
+    document.getElementById('reservaCheckin').value = busquedaActual.checkin;
+    document.getElementById('reservaCheckout').value = busquedaActual.checkout;
+    document.getElementById('reservaHuespedes').value = busquedaActual.huespedes;
+    document.getElementById('reservaNotas').value = '';
+    
+    // Mostrar precio
+    document.getElementById('precioPorNoche').textContent = '$' + habitacionSeleccionada.precio.toLocaleString('es-CO');
+    
+    // Calcular total
+    calcularTotal();
+    
+    // Mostrar modal
+    document.getElementById('modalReserva').style.display = 'flex';
+}
+
+function calcularTotal() {
+    if (!habitacionSeleccionada) return;
+    
+    const checkin = new Date(document.getElementById('reservaCheckin').value);
+    const checkout = new Date(document.getElementById('reservaCheckout').value);
+    
+    if (isNaN(checkin.getTime()) || isNaN(checkout.getTime())) {
+        document.getElementById('totalEstimado').textContent = '$0';
+        return;
+    }
+    
+    const noches = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+    
+    if (noches > 0) {
+        const total = habitacionSeleccionada.precio * noches;
+        document.getElementById('totalEstimado').textContent = '$' + total.toLocaleString('es-CO');
+    } else {
+        document.getElementById('totalEstimado').textContent = '$0';
+    }
+}
+
+function cerrarModalReserva() {
+    document.getElementById('modalReserva').style.display = 'none';
+    habitacionSeleccionada = null;
+}
+
+// Array para almacenar las reservas
+let misReservas = [];
+
+function confirmarReserva() {
+    if (!habitacionSeleccionada) return;
+    
+    const checkin = document.getElementById('reservaCheckin').value;
+    const checkout = document.getElementById('reservaCheckout').value;
+    const huespedes = document.getElementById('reservaHuespedes').value;
+    const notas = document.getElementById('reservaNotas').value;
+    
+    // Validaciones
+    if (!checkin || !checkout) {
+        alert('Por favor selecciona las fechas');
+        return;
+    }
+    
+    if (new Date(checkout) <= new Date(checkin)) {
+        alert('La fecha de check-out debe ser posterior al check-in');
+        return;
+    }
+    
+    // Verificar si el usuario esta logueado
+    if (!usuarioActual) {
+        alert('Debes iniciar sesion para realizar una reserva');
+        cerrarModalReserva();
+        document.getElementById('modalLogin').style.display = 'flex';
+        return;
+    }
+    
+    // Calcular total
+    const noches = Math.ceil((new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24));
+    const total = habitacionSeleccionada.precio * noches;
+    
+    // Crear objeto de reserva
+    const nuevaReserva = {
+        id: Date.now(),
+        habitacion: habitacionSeleccionada.nombre.replace('Habitacion ', ''),
+        tipo: habitacionSeleccionada.tipo,
+        checkin: checkin,
+        checkout: checkout,
+        huespedes: parseInt(huespedes),
+        total: total,
+        estado: 'Completada',
+        ciudad: nombresCiudades[busquedaActual.ciudad]
+    };
+    
+    // Agregar a las reservas
+    misReservas.push(nuevaReserva);
+    
+    // Guardar en localStorage
+    localStorage.setItem('misReservas', JSON.stringify(misReservas));
+    
+    // Cerrar modal
+    cerrarModalReserva();
+    
+    // Redirigir al dashboard de cliente a la seccion de mis reservas
+    window.location.href = 'dashboardCliente.php#reservas';
+}
+
+function mostrarToast(mensaje) {
+    // Crear elemento toast si no existe
+    let toast = document.getElementById('toastNotificacion');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toastNotificacion';
+        toast.className = 'toast-notificacion';
+        document.body.appendChild(toast);
+    }
+    
+    // Configurar contenido
+    toast.innerHTML = `
+        <div class="toast-contenido">
+            <i class="fas fa-check-circle"></i>
+            <p>${mensaje}</p>
+        </div>
+    `;
+    
+    // Mostrar toast
+    toast.classList.add('show');
+    
+    // Ocultar despues de 5 segundos
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 5000);
+}
+
+function mostrarMisReservas() {
+    const seccion = document.getElementById('mis-reservas');
+    const tbody = document.getElementById('bodyReservas');
+    
+    // Cargar reservas de localStorage si existen
+    const reservasGuardadas = localStorage.getItem('misReservas');
+    if (reservasGuardadas) {
+        misReservas = JSON.parse(reservasGuardadas);
+    }
+    
+    if (misReservas.length === 0) {
+        seccion.style.display = 'none';
+        return;
+    }
+    
+    // Formatear fechas
+    const formatearFecha = (fecha) => {
+        const d = new Date(fecha + 'T00:00:00');
+        return d.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    };
+    
+    // Generar filas de la tabla
+    tbody.innerHTML = misReservas.map(reserva => `
+        <tr>
+            <td><strong>${reserva.habitacion}</strong></td>
+            <td>${reserva.tipo}</td>
+            <td>${formatearFecha(reserva.checkin)}</td>
+            <td>${formatearFecha(reserva.checkout)}</td>
+            <td>${reserva.huespedes}</td>
+            <td><strong>$${reserva.total.toLocaleString('es-CO')}</strong></td>
+            <td><span class="estado-badge estado-${reserva.estado.toLowerCase()}">${reserva.estado}</span></td>
+            <td>${reserva.estado === 'Completada' ? '-' : '<button class="btn-cancelar-reserva" onclick="cancelarReservaLocal(' + reserva.id + ')">Cancelar</button>'}</td>
+        </tr>
+    `).join('');
+    
+    seccion.style.display = 'block';
+}
+
+function cancelarReservaLocal(id) {
+    if (confirm('¿Estas seguro de que deseas cancelar esta reserva?')) {
+        misReservas = misReservas.filter(r => r.id !== id);
+        localStorage.setItem('misReservas', JSON.stringify(misReservas));
+        mostrarMisReservas();
+    }
+}
+
+function irAlDashboard() {
+    // Verificar si el usuario esta logueado
+    if (!usuarioActual) {
+        alert('Debes iniciar sesion para ver todas las habitaciones');
+        document.getElementById('modalLogin').style.display = 'flex';
+        return;
+    }
+    
+    // Redirigir al dashboard del cliente
+    window.location.href = 'dashboardCliente.php#habitaciones';
+}
+
+// Ya no mostramos reservas en index.html, solo en el dashboard
+</script>
+
+</body>
+</html>

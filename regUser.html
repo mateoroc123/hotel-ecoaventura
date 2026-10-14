@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | Hotel EcoAventura</title>
+    <link rel="stylesheet" href="Css/myStyle.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a5d1a 0%, #2e7d32 50%, #43a047 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            color: #1a5d1a;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2e7d32;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .required::after {
+            content: " *";
+            color: #d32f2f;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            background: #1a5d1a;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .login-link a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .password-hint {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Usuario</h1>
+        <p class="subtitle">Hotel EcoAventura - Crea tu cuenta</p>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <form action="Php/registro.php" method="POST" id="registroForm">
+            
+            <!-- Nombres y Apellidos -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre" class="required">Nombres</label>
+                    <input type="text" 
+                           name="nombre" 
+                           id="nombre" 
+                           placeholder="Ingrese sus nombres" 
+                           required 
+                           minlength="2"
+                           maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label for="apellido" class="required">Apellidos</label>
+                    <input type="text" 
+                           name="apellido" 
+                           id="apellido" 
+                           placeholder="Ingrese sus apellidos" 
+                           required 
+                           minlength="2"
+                           maxlength="100">
+                </div>
+            </div>
+
+            <!-- Documento -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tipo_documento" class="required">Tipo Documento</label>
+                    <select name="tipo_documento" id="tipo_documento" required>
+                        <option value="">Seleccione...</option>
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="TI">Tarjeta de Identidad</option>
+                        <option value="PP">Pasaporte</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="numero_documento" class="required">Número Documento</label>
+                    <input type="text" 
+                           name="numero_documento" 
+                           id="numero_documento" 
+                           placeholder="Ej: 1234567890" 
+                           required
+                           pattern="[A-Za-z0-9]+"
+                           maxlength="20">
+                </div>
+            </div>
+
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username" class="required">Nombre de Usuario</label>
+                <input type="text" 
+                       name="username" 
+                       id="username" 
+                       placeholder="Ej: juanperez123" 
+                       required
+                       minlength="4"
+                       maxlength="50"
+                       pattern="[a-zA-Z0-9_]+">
+                <p class="password-hint">Solo letras, números y guion bajo (_)</p>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email" class="required">Correo Electrónico</label>
+                <input type="email" 
+                       name="email" 
+                       id="email" 
+                       placeholder="correo@ejemplo.com" 
+                       required
+                       maxlength="150">
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password" class="required">Contrasena</label>
+                <input type="password" 
+                       name="password" 
+                       id="password" 
+                       placeholder="Ingrese su contrasena" 
+                       required
+                       minlength="1"
+                       maxlength="255">
+                <p class="password-hint">Sin limite de caracteres</p>
+            </div>
+
+            <!-- Confirmar Password -->
+            <div class="form-group">
+                <label for="confirmar_password" class="required">Confirmar Contraseña</label>
+                <input type="password" 
+                       name="confirmar_password" 
+                       id="confirmar_password" 
+                       placeholder="Repita su contraseña" 
+                       required>
+            </div>
+
+            <!-- Teléfono y Género -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" 
+                           name="telefono" 
+                           id="telefono" 
+                           placeholder="Ej: 3001234567"
+                           maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label for="genero" class="required">Género</label>
+                    <select name="genero" id="genero" required>
+                        <option value="">Seleccione...</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                        <option value="O">Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dirección -->
+            <div class="form-group">
+                <label for="direccion">Direccion</label>
+                <input type="text" 
+                       name="direccion" 
+                       id="direccion" 
+                       placeholder="Ej: Calle 123 #45-67"
+                       maxlength="255">
+            </div>
+
+            <!-- Tipo de Usuario (Rol) -->
+            <div class="form-group">
+                <label for="rol" class="required">Tipo de Usuario</label>
+                <select name="rol" id="rol" required>
+                    <option value="">Seleccione...</option>
+                    <option value="cliente" selected>Cliente</option>
+                    <option value="administrador">Administrador</option>
+                </select>
+                <p class="password-hint">Seleccione su tipo de cuenta</p>
+            </div>
+
+            <button type="submit" class="btn-submit">Registrarse</button>
+        </form>
+
+        <div class="login-link">
+            <a href="login.html">¿Ya tienes cuenta? Inicia sesión aquí</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmarPassword = document.getElementById('confirmar_password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (password !== confirmarPassword) {
+                e.preventDefault();
+                errorDiv.textContent = 'Las contraseñas no coinciden';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            errorDiv.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
