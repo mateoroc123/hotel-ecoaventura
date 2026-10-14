@@ -1,0 +1,20 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ecoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1b5e20"></stop>
+      <stop offset="100%" stop-color="#66bb6a"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- Circle background -->
+  <circle cx="512" cy="512" r="480" fill="url(#ecoGradient)"></circle>
+
+  <!-- Leaf -->
+  <path d="M512 250 
+           C700 320, 760 512, 512 820 
+           C260 512, 320 320, 512 250 Z" fill="#ffffff"></path>
+
+  <!-- Small house -->
+  <polygon points="420,560 512,460 604,560" fill="#ffffff"></polygon>
+  <rect x="455" y="560" width="115" height="95" fill="#ffffff"></rect>
+</svg>
